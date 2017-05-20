@@ -1,0 +1,2 @@
+module AzureSearch
+end
