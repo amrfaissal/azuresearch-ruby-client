@@ -1,0 +1,7 @@
+require 'azure_search/utils'
+require 'azure_search/errors'
+require 'azure_search/version'
+require 'azure_search/index_field'
+require 'azure_search/search_index_client'
+require 'azure_search/index_search_options'
+require 'azure_search/index_batch_operation'
