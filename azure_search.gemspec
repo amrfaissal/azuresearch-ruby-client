@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["amr.faissal@gmail.com"]
 
   spec.summary       = %q{Microsoft Azure Search Client Library for Ruby.}
-  spec.description   = %q{Microsoft Azure Search Client Library for Ruby.}
+  spec.description   = %q{This library allows you to interact with Microsoft Azure Search using Ruby.}
   spec.homepage      = "https://github.com/amrfaissal/azuresearch-ruby-client.git"
   spec.license       = "MIT"
 
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency 'http', '~> 2.2'
+  spec.add_runtime_dependency 'nokogiri', '~> 1.7'
   spec.add_development_dependency 'bundler', '~> 1.15'
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'rspec', '~> 3.6'
