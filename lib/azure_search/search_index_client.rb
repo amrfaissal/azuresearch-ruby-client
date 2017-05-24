@@ -146,8 +146,8 @@ module AzureSearch
 
     def create_request
       HTTP.headers({
-        "Content-Type": "application/json",
-        "api-key": self.api_key
+        "Content-Type" => "application/json",
+        "api-key" => self.api_key
       })
     end
 
