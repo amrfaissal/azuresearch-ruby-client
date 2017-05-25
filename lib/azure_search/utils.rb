@@ -1,5 +1,3 @@
-require 'nokogiri'
-
 module AzureSearch
 
   # Checks if the supplied value is a Boolean.
@@ -12,7 +10,7 @@ module AzureSearch
   #
   # @param [String] text The text to check.
   # @return [TrueClass,FalseClass] true or false.
-  def has_html?(text); Nokogiri::XML(text).errors.empty? end
+  def has_html?(text); !!text.match(/<[a-z][\s\S]*>/i) end
 
   # Converts a Hash into query parameters string.
   #
