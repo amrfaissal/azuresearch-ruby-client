@@ -20,7 +20,21 @@ module AzureSearch
       IndexDeleteOperation.new(key_name, key_value).to_hash
     end
 
-    # @todo Add support for merge & merge_or_upload
+    # Encapsulates the supplied document in an IndexMergeOperation.
+    #
+    # @param [Hash] document The document.
+    # @return [Hash] The merge operation as a Hash.
+    def self.merge(document)
+      IndexMergeOperation.new(document).to_hash
+    end
+
+    # Encapsulates the supplied document in an IndexMergeOrUploadOperation.
+    #
+    # @param [Hash] document The document.
+    # @return [Hash] The mergeOrUpload operation as a Hash.
+    def self.merge_or_upload(document)
+      IndexMergeOrUploadOperation.new(document).to_hash
+    end
   end
 
   # Represents an upload operation of a document.
@@ -53,6 +67,37 @@ module AzureSearch
         @key_name => @key_value,
         "@search_action" => "delete"
       }
+    end
+  end
+
+  # Updates an existing document with the specified fields.
+  class IndexMergeOperation < IndexBatchOperation
+    def initialize(document)
+      @document = document
+    end
+
+    # Returns the merge operation as a Hash.
+    #
+    # @return [Hash] The merge operation.
+    def to_hash
+      @document["@search.action"] = "merge"
+      @document
+    end
+  end
+
+  # Behaves like IndexMergeOperation if a document with the given key already exists in the index.
+  # If the document does not exist, it behaves like IndexUploadOperation with a new document.
+  class IndexMergeOrUploadOperation < IndexBatchOperation
+    def initialize(document)
+      @document = document
+    end
+
+    # Returns the mergeOrUpload operation as a Hash.
+    #
+    # @return [Hash] The mergeOrUpload operation.
+    def to_hash
+      @document["@search.action"] = "mergeOrUpload"
+      @document
     end
   end
 
