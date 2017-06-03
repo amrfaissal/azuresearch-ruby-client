@@ -8,7 +8,7 @@ This library brings Microsoft Azure Search to your Ruby/RoR application. It allo
 
 ## Requirements
 
-- Ruby 2.1 or later.
+- Ruby 2.0 or later.
 - API key.
 
 ## Installation
@@ -48,16 +48,17 @@ include AzureSearch
 
 client = SearchIndexClient.new("service-name", "index-name", "generated-api-key")
 
-# Delete the index if it exists (Only in for testing purposes)
+# Delete the index if it exists (Only for testing purposes)
 client.delete unless !client.exists
 
 # Index definition
 index_def = {
   :name => "carshop",
   :fields => [
-    IndexField.new("ID", "Edm.String").searchable(true).key(true).to_hash,
-    IndexField.new("CarName", "Edm.String").searchable(true).to_hash,
-    IndexField.new("CarModel", "Edm.String").searchable(true).to_hash
+    IndexField.new("id", "Edm.String").searchable(true).key(true),
+    IndexField.new("year", "Edm.String").searchable(true).retrievable(true),
+    IndexField.new("make", "Edm.String").searchable(true).retrievable(true),
+    IndexField.new("trim", "Edm.String").searchable(true).retrievable(true)
   ]
 }
 # Create the index with supplied index definition
@@ -65,17 +66,20 @@ client.create(index_def)
 
 # Perform a batch insert of documents
 ops = [
-  IndexBatchOperation.upload({"ID" => "1", "CarName" => "Audi A5", "CarModel" => "2017"}),
-  IndexBatchOperation.upload({"ID" => "2", "CarName" => "Dacia", "CarModel" => "2013"}),
-  IndexBatchOperation.upload({"ID" => "3", "CarName" => "Opel Astra", "CarModel" => "2016"}),
-  IndexBatchOperation.upload({"ID" => "4", "CarName" => "Mercedes Benz", "CarModel" => "2017"}),
-  IndexBatchOperation.upload({"ID" => "5", "CarName" => "Alpha Romeo", "CarModel" => "2015"})
+  IndexBatchOperation.upload({"id"=>1, "year"=>"2017", "make"=>"Audi", "model"=>"A3", "trim"=>"1.8 TFSI Premium 2dr Sedan"}),
+  IndexBatchOperation.upload({"id"=>2, "year"=>"2017", "make"=>"Audi", "model"=>"A3", "trim"=>"2.0 TDI Premium 4dr Sedan"}),
+  IndexBatchOperation.upload({"id"=>3, "year"=>"2016", "make"=>"Audi", "model"=>"A4", "trim"=>"2.0 TDI Premium 4dr Sedan"}),
+  IndexBatchOperation.upload({"id"=>4, "year"=>"2016", "make"=>"Bentley", "model"=>"Mulsanne", "trim"=>"4dr Sedan"}),
+  IndexBatchOperation.upload({"id"=>5, "year"=>"2016", "make"=>"Dodge", "model"=>"Dart", "trim"=>"Aero 4dr Sedan"})
 ]
 client.batch_insert(ops, chunk_size=3)
 
-# Perform a search request
-search_opts = IndexSearchOptions.new.include_count(true).search_mode("all").search_fields("CarName,CarModel").top(3)
-response = client.search("2017", search_opts)
+# Perform a simple search for cars that are not of Audi make.
+search_opts = IndexSearchOptions.new
+                                .include_count(true)
+                                .search_mode("all")
+                                .search_fields("make,trim")
+response = client.search("-audi", search_opts)
 puts response
 
 # Lookup the document with ID "1"
