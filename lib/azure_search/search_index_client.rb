@@ -52,6 +52,7 @@ module AzureSearch
     def create(definition)
       raise "Index definition must be a Hash." unless definition.is_a? Hash
       definition[:name] = self.index_name unless !definition[:name]
+      definition[:fields] = definition[:fields].map(&:to_hash)
       resp = create_request().post(build_index_list_url(), :json => definition)
       raise_on_http_error(resp)
       return JSON.parse(resp.to_s)
@@ -66,6 +67,7 @@ module AzureSearch
     def create_or_update(definition)
       raise "Index definition must be a Hash." unless definition.is_a? Hash
       definition[:name] = self.index_name unless definition[:name]
+      definition[:fields] = definition[:fields].map(&:to_hash)
       resp = create_request().put(build_index_definition_url(), :json => definition)
       raise_on_http_error(resp)
       return resp.to_s.empty? ? nil : JSON.parse(resp.to_s)
